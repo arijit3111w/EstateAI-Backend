@@ -78,6 +78,25 @@ def load_model_artifacts():
         logger.error(f"❌ Error loading advanced model: {str(e)}")
         raise e
 
+# Ensure compatibility shim for some numpy pickles that reference `numpy._core`
+# This creates a lightweight module `numpy._core` that points to the compiled
+# `_multiarray_umath` backend when it isn't present (fixes ModuleNotFoundError
+# during joblib unpickle of artifacts saved with different numpy builds).
+try:
+    import importlib, types, sys
+    if importlib.util.find_spec('numpy._core') is None:
+        try:
+            backend = importlib.import_module('numpy.core._multiarray_umath')
+        except Exception:
+            backend = None
+        shim = types.ModuleType('numpy._core')
+        if backend is not None:
+            setattr(shim, '_multiarray_umath', backend)
+        sys.modules['numpy._core'] = shim
+except Exception:
+    # If the shim fails for any reason, we'll let the real loader try and surface errors
+    pass
+
 # Load model on import
 load_model_artifacts()
 
