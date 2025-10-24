@@ -7,8 +7,11 @@ __pycache__/
 # Environment variables
 .env
 
-# Model artifacts (optional, if you want to keep them out of git)
-*.joblib
+# Model artifacts (we need these for deployment).
+# NOTE: previously we ignored all .joblib files which prevented model artifacts
+# from being included in Docker builds. For deployment we keep the artifacts in Git.
+# If you prefer to store models externally, re-enable this line and use object storage.
+# *.joblib
 *.h5
 *.pkl
 
