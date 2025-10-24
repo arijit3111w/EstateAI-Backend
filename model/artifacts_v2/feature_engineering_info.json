@@ -1,0 +1,35 @@
+{
+  "categorical_encoders": {
+    "size_category": [
+      "Large",
+      "Mansion",
+      "Medium",
+      "Small"
+    ],
+    "grade_binned": [
+      "Above_Avg",
+      "Average",
+      "Below_Avg",
+      "High",
+      "Low"
+    ],
+    "age_binned": [
+      "Established",
+      "Modern",
+      "Old"
+    ]
+  },
+  "current_year": 2025,
+  "feature_engineering_steps": [
+    "house_age = current_year - Built Year",
+    "years_since_renovation = current_year - Renovation Year (if renovated)",
+    "is_renovated = (Renovation Year > 0)",
+    "total_area = living area + lot area",
+    "living_to_lot_ratio = living area / lot area",
+    "basement_ratio = Area of basement / living area",
+    "luxury_score = grade * living area / 1000",
+    "location_desirability = schools*0.3 + (10-airport_dist)*0.2 + waterfront*3 + views*0.5",
+    "area_per_room = living area / (bedrooms + bathrooms)",
+    "And many more..."
+  ]
+}
