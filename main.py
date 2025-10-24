@@ -90,8 +90,23 @@ try:
         except Exception:
             backend = None
         shim = types.ModuleType('numpy._core')
-        if backend is not None:
-            setattr(shim, '_multiarray_umath', backend)
+        # Mark as package so dotted imports like numpy._core.multiarray work
+        shim.__path__ = []
+        # Try to expose common compiled submodules under numpy._core
+        try:
+            multi = importlib.import_module('numpy.core.multiarray')
+            sys.modules['numpy._core.multiarray'] = multi
+            setattr(shim, 'multiarray', multi)
+        except Exception:
+            pass
+
+        try:
+            umath = importlib.import_module('numpy.core._multiarray_umath')
+            sys.modules['numpy._core._multiarray_umath'] = umath
+            setattr(shim, '_multiarray_umath', umath)
+        except Exception:
+            pass
+
         sys.modules['numpy._core'] = shim
 except Exception:
     # If the shim fails for any reason, we'll let the real loader try and surface errors
